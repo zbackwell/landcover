@@ -1,0 +1,36 @@
+#map {
+    height: 875px;
+}
+
+pa {
+    margin: 0 auto;
+    font-weight: 800;
+    font-size: 20;
+    text-align: center;
+    display: block;
+}
+
+b {
+    font-weight: 800;
+}
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 1.0;
+}
