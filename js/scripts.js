@@ -44,12 +44,12 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 // Oregon rasters
-var OR19 = '/data/nlcd_2019_oregon_100m.png';
+var OR19 = 'https://zbackwell.github.io/landcover/data/nlcd_2019_oregon_100m.png';
 var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
 var altText = 'Image of Newark, N.J. in 1922. Source: The University of Texas at Austin, UT Libraries Map Collection.';
 var latLngBounds = L.latLngBounds([[41.9917939999999987, -124.5524410000000017], [46.2710039999999978, -116.4635040000000004]]);
 
-var OR21 = '/data/nlcd_2021_oregon_100m.png';
+var OR21 = 'https://zbackwell.github.io/landcover/data/nlcd_2021_oregon_100m.png';
 var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
 var altText = '2021 land cover image of Oregon.';
 var latLngBounds = L.latLngBounds([[41.9917939999999987, -124.5524410000000017], [46.2710039999999978, -116.4635040000000004]]);
