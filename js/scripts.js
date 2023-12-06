@@ -160,7 +160,7 @@ function geojsonlayer(data){
     return geojson
 }
 
-fetch('/data/cb_2018_us_state_5m.geojson')
+fetch('https://zbackwell.github.io/landcover/data/cb_2018_us_state_5m.geojson')
     // convert data to json
     .then(function(response){
         return response.json();
