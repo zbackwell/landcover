@@ -236,7 +236,7 @@ function setData(e) {
     map.fitBounds(e.target.getBounds());
 
     // create a popup
-    fetch('/data/popupdata.json')
+    fetch('https://zbackwell.github.io/landcover/data/popupdata.json')
         .then(response => response.json())
         .then(data => {
             // check if clicked state has data to display
