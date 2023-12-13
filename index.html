@@ -14,8 +14,17 @@
     <script src="leaflet-side-by-side-gh-pages\leaflet-side-by-side.js"></script>
 </head>
 <body>
-    <pa>Land Cover Change in the U.S.</pa>
+    <pa>Land Cover Change in the Contiguous U.S.</pa><br>
     <div id="map"></div>
+    <div id="mapControls"></div><br>
+    <mapInfo>This map uses and adapts multiple years of land cover data from the National Land Cover Database. Pixel area is 100<sup>2</sup>m to limit data size but data may still take longer to load depending on the size of your selected state.</mapInfo><br>
+    <disc>Disclaimer: Avoid loading multiple states at a time. After viewing a state, please click "Reset Map" to remove the loaded data and prevent freezing. Current states with data include Oregon, California, Texas, and Louisiana.
+    </disc><br><br>
+    <att>Data Sources:<br>
+        Land Cover Data: National Land Cover Database<br>
+        Population and State Data: United States Census Bureau<br>
+        Wildfire Acres Burned: Oregon Department of Forestry, California Department of Forestry and Fire Protection
+    </att>
 
     <script src="js/scripts.js" defer></script>
 </body>

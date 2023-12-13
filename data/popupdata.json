@@ -1,0 +1,6 @@
+{
+    "OR": {"event": "2020 Labor Day Wildfires", "text": "Acres Burned: 1,221,324", "text2": " ", "att": "U.S. Census Bureau"},
+    "CA": {"event": "2017-2018 Wildfires", "text": "2017 Acres Burned: 1,599,640", "text2": "2018 Acres Burned: 1,975,086", "att": "U.S. Census Bureau"},
+    "LA": {"event": "Hurricane Katrina", "text": "Coastal erosion is visible near New Orleans", "text2": " ", "att": "U.S. Census Bureau"},
+    "TX": {"event": "Population/Urban Growth", "text": "2000 Population: 20,851,820", "text2": "2020 Population: 29,145,505", "att": "U.S. Census Bureau"}
+}

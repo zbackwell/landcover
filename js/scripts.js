@@ -1,6 +1,5 @@
 var map = L.map('map').setView([40, -95], 5);
 
-// uncomment when project is done to use mapbox style
 var basemap = L.tileLayer('https://api.mapbox.com/styles/v1/zbackwell/clphi6hnu005w01r8g2gf41ak/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiemJhY2t3ZWxsIiwiYSI6ImNsb2l5cnE3cjA1NXoya3BkcjdqZ3RsYWYifQ.z4_szcYwFxFXbcOmaM2e5g', {
     maxZoom: 19,
     minZoom: 5,
@@ -32,7 +31,7 @@ legend.onAdd = function (map) {
         labels = ["Open Water", "Perennial Ice/Snow", "Developed, Open Space", "Developed, Low Intensity", "Developed, Medium Intensity", "Developed, High Intensity", "Barren Land",
     "Deciduous Forest", "Evergreen Forest", "Mixed Forest", "Shrub/Scrub", "Grassland/Herbaceous", "Pasture/Hay", "Cultivated Crops", "Woody Wetlands", "Emergent Herbaceous Wetlands"];
 
-    // loop through our density intervals and generate a label with a colored square for each interval
+    // create the legend labels
     for (var i = 0; i < labels.length; i++) {
         div.innerHTML +=
             '<i style="background:' + getColor(labels[i]) + '"></i> ' +
@@ -43,21 +42,56 @@ legend.onAdd = function (map) {
 
 legend.addTo(map);
 
-// Oregon rasters
-var OR19 = 'https://zbackwell.github.io/landcover/data/nlcd_2019_oregon_100m.png';
-var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
-var altText = 'Image of Newark, N.J. in 1922. Source: The University of Texas at Austin, UT Libraries Map Collection.';
-var latLngBounds = L.latLngBounds([[41.9917939999999987, -124.5524410000000017], [46.2710039999999978, -116.4635040000000004]]);
+var info = L.control();
 
-var OR21 = 'https://zbackwell.github.io/landcover/data/nlcd_2021_oregon_100m.png';
-var errorOverlayUrl = 'https://cdn-icons-png.flaticon.com/512/110/110686.png';
-var altText = '2021 land cover image of Oregon.';
-var latLngBounds = L.latLngBounds([[41.9917939999999987, -124.5524410000000017], [46.2710039999999978, -116.4635040000000004]]);
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+};
 
-// create a reset button for the map data
-const resetButton = document.createElement("button");
-resetButton.textContent = "Reset Map";
-document.body.appendChild(resetButton)
+info.update = function (props) {
+    this._div.innerHTML = '<h4>US Land Cover Data Years</h4>' +  (props ?
+        '<b>' + props.NAME + '</b><br />' + "Left: " + props.LEFT + '<br />' + 'Right: ' + props.RIGHT + '<br />'
+        : 'Click on a state');
+};
+
+info.addTo(map);
+
+document.addEventListener("DOMContentLoaded", function() {
+    // create a button object
+    const resetButton = document.createElement("button");
+    resetButton.textContent = "Reset Map";
+    
+    // append the button
+    const mapControlsContainer = document.getElementById("mapControls");
+
+    if (mapControlsContainer) {
+        mapControlsContainer.appendChild(resetButton);
+    } else {
+        console.error("Map controls container not found");
+    }
+
+    // remove data when user clicks the button
+    resetButton.addEventListener("click", function() {
+        // reset to original view
+        map.setView([40, -95], 5);
+        
+        // run function for each layer loaded
+        map.eachLayer(function (layer) {
+            // remove all layers except the basemap
+            if (layer !== basemap) {
+                map.removeLayer(layer);
+            }
+        })
+        // update the info to remove current state
+        info.update()
+        // remove the slider when returning to main view
+        map.removeControl(slider)
+        // replace states layer since this function removes all layers
+        geojson.addTo(map);
+        });
+});
 
 function style(feature) {
     return {
@@ -89,55 +123,150 @@ function resetHighlight(e) {
 
 var slider;
 
-function setData(e) {
-    var geojson = e.target.feature
+// Oregon
+var latLngBoundsOR = L.latLngBounds([[41.9917939999999987, -124.5524410000000017], [46.2710039999999978, -116.4635040000000004]]);
 
-    map.fitBounds(e.target.getBounds());
-    // if statement that checks if clicked feature is Oregon
-    if (geojson.properties.STATEFP === "41") {
-        // create map panes to hold images in place
-        map.createPane('left');
-        map.createPane('right');
-        
-        // define the images
-        var img1 = L.imageOverlay(OR19, latLngBounds, {
+var OR1 = "https://zbackwell.github.io/landcover/data/nlcd_2019_oregon_100m.png";
+var OR2 = "https://zbackwell.github.io/landcover/data/nlcd_2021_oregon_100m.png";
+
+// Louisiana
+var latLngBoundsLA = L.latLngBounds([[28.9297089999999990, -94.0431470000000047], [33.0194570000000027, -88.8170170000000070]]);
+
+var LA1 = "data/nlcd_2004_louisiana_100m.png";
+var LA2 = "data/nlcd_2006_louisiana_100m.png";
+
+// California
+var latLngBoundsCA = L.latLngBounds([[32.5341560000000030, -124.4095910000000060], [42.0095179999999999, -114.1344270000000023]]);
+
+var CA1 = "data/nlcd_2016_california_100m.png";
+var CA2 = "data/nlcd_2019_california_100m.png";
+
+// Texas
+var latLngBoundsTX = L.latLngBounds([[25.8373770000000000, -106.6454789999999946], [36.5007039999999989, -93.5164070000000009]]);
+
+var TX1 = "data/nlcd_2001_texas_100m.png";
+var TX2 = "data/nlcd_2021_texas_100m.png";
+
+// error image
+var errorOverlayUrl = "https://cdn-icons-png.flaticon.com/512/110/110686.png";
+
+function loadData(STUSPS) {
+    // create map panes to hold images in place
+    map.createPane('left');
+    map.createPane('right');
+
+    var img1, img2;
+
+    // check the abbreviation of the selected state
+    if (STUSPS === "OR") {
+        img1 = L.imageOverlay(OR1, latLngBoundsOR, {
             opacity: 1,
             errorOverlayUrl: errorOverlayUrl,
-            alt: altText,
             interactive: true,
             pane: "left"
         }).addTo(map);
 
-        var img2 = L.imageOverlay(OR21, latLngBounds, {
+        img2 = L.imageOverlay(OR2, latLngBoundsOR, {
             opacity: 1,
             errorOverlayUrl: errorOverlayUrl,
-            alt: altText,
             interactive: true,
             pane: "right"
         }).addTo(map);
+    }
+    else if (STUSPS === "LA") {
+        img1 = L.imageOverlay(LA1, latLngBoundsLA, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "left"
+        }).addTo(map);
 
-        // add the images to and create the slider
-        slider = L.control.sideBySide(img1, img2).addTo(map);
+        img2 = L.imageOverlay(LA2, latLngBoundsLA, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "right"
+        }).addTo(map);
+    }
+    else if (STUSPS === "CA") {
+        img1 = L.imageOverlay(CA1, latLngBoundsCA, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "left"
+        }).addTo(map);
+
+        img2 = L.imageOverlay(CA2, latLngBoundsCA, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "right"
+        }).addTo(map);
+    }
+    else if (STUSPS === "TX") {
+        img1 = L.imageOverlay(TX1, latLngBoundsTX, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "left"
+        }).addTo(map);
+
+        img2 = L.imageOverlay(TX2, latLngBoundsTX, {
+            opacity: 1,
+            errorOverlayUrl: errorOverlayUrl,
+            interactive: true,
+            pane: "right"
+        }).addTo(map);
     }
     else {
         return;
     }
+
+    // Add text box with year to each pane
+    info.update(null);
+
+    // add the images to and create the slider
+    slider = L.control.sideBySide(img1, img2).addTo(map);
 }
 
-function resetMap(e) {
-    // reset to original view
-    map.setView([40, -95], 5);
-    
-    // remove all data layers to reset map
-    map.eachLayer(function (layer) {
-        map.removeLayer(layer);
-    })
-    // remove the slider when returning to main view
-    map.removeControl(slider)
-    // replace states layer since this function removes all layers
-    geojson.addTo(map);
-    // replace mapbox style basemap
-    basemap.addTo(map);
+function setData(e) {
+    var geojson = e.target.feature;
+    var clickedState = geojson.properties.STUSPS;
+
+    map.fitBounds(e.target.getBounds());
+
+    // create a popup
+    fetch('/data/popupdata.json')
+        .then(response => response.json())
+        .then(data => {
+            // check if clicked state has data to display
+            if (data.hasOwnProperty(clickedState)) {
+                var stateData = data[clickedState];
+                var popupContent = '<b>' + stateData.event + '</b><br />' + stateData.text + '<br />' + stateData.text2;
+
+                var popup = L.popup()
+                    .setLatLng(e.latlng)
+                    .setContent(popupContent)
+                    .openOn(map);
+
+                // bind the popup to the state
+                e.target.bindPopup(popup);
+            } else {
+                console.error("Data is not yet available for " + geojson.properties.NAME);
+                var popupContent2 = "Data is not yet available for " + geojson.properties.NAME;
+
+                var popup2 = L.popup()
+                    .setLatLng(e.latlng)
+                    .setContent(popupContent2)
+                    .openOn(map);
+                e.target.bindPopup(popup2);
+            }
+        })
+        .catch(error => console.error("Error fetching state data:", error));
+
+    // call function to load the data for the selected state
+    loadData(clickedState);
+    info.update(geojson.properties);
 }
 
 function onEachFeature(feature, layer) {
@@ -149,9 +278,7 @@ function onEachFeature(feature, layer) {
     layer.feature = feature;
 }
 
-resetButton.onclick = resetMap;
-
-// if not done in a function, fetching the GeoJSON file gave an error
+// create the geojson layer
 function geojsonlayer(data){
     geojson = L.geoJson(data, {
         style: style,
