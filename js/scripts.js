@@ -132,20 +132,20 @@ var OR2 = "https://zbackwell.github.io/landcover/data/nlcd_2021_oregon_100m.png"
 // Louisiana
 var latLngBoundsLA = L.latLngBounds([[28.9297089999999990, -94.0431470000000047], [33.0194570000000027, -88.8170170000000070]]);
 
-var LA1 = "data/nlcd_2004_louisiana_100m.png";
-var LA2 = "data/nlcd_2006_louisiana_100m.png";
+var LA1 = "https://zbackwell.github.io/landcover/data/nlcd_2004_louisiana_100m.png";
+var LA2 = "https://zbackwell.github.io/landcover/data/nlcd_2006_louisiana_100m.png";
 
 // California
 var latLngBoundsCA = L.latLngBounds([[32.5341560000000030, -124.4095910000000060], [42.0095179999999999, -114.1344270000000023]]);
 
-var CA1 = "data/nlcd_2016_california_100m.png";
-var CA2 = "data/nlcd_2019_california_100m.png";
+var CA1 = "https://zbackwell.github.io/landcover/data/nlcd_2016_california_100m.png";
+var CA2 = "https://zbackwell.github.io/landcover/data/nlcd_2019_california_100m.png";
 
 // Texas
 var latLngBoundsTX = L.latLngBounds([[25.8373770000000000, -106.6454789999999946], [36.5007039999999989, -93.5164070000000009]]);
 
-var TX1 = "data/nlcd_2001_texas_100m.png";
-var TX2 = "data/nlcd_2021_texas_100m.png";
+var TX1 = "https://zbackwell.github.io/landcover/data/nlcd_2001_texas_100m.png";
+var TX2 = "https://zbackwell.github.io/landcover/data/nlcd_2021_texas_100m.png";
 
 // error image
 var errorOverlayUrl = "https://cdn-icons-png.flaticon.com/512/110/110686.png";
